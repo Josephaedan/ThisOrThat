@@ -1,5 +1,5 @@
-# Dragon Hot Or Not
-Project for ThisOrThat application built on NextJS + Prisma with PostgreSQL database
+# This Or That
+Project for ThisOrThat application built on NextJS + Prisma with PostgreSQL database. Users will view a website with 2 images and select one of the two options (this or that). An ELO rating system will then be applied to the images so that we can view the ratings of the images.
 
 ## Requirements
 Install the following programs on your computer:
