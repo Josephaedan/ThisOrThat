@@ -25,15 +25,15 @@ export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     FacebookProvider({
       clientId: env.FACEBOOK_CLIENT_ID,
-      clientSecret: env.FACEBOOK_CLIENT_SECRET
+      clientSecret: env.FACEBOOK_CLIENT_SECRET,
     }),
     GitHubProvider({
       clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -56,19 +56,22 @@ export const authOptions: NextAuthOptions = {
         if (!user?.password) {
           throw new Error("User has no password");
         }
-        const passwordValid = await bcrypt.compare(credentials.password, user.password);
+        const passwordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
         if (!passwordValid) {
           throw new Error("Invalid password");
         }
         return user;
       },
-  }),
+    }),
   ],
   pages: {
-    signIn: "/auth/signin",
-    signOut: "/",
-    error: "/auth/error", // Error code passed in query string as ?error=
-  }
+    // signIn: "/auth/signin",
+    // signOut: "/",
+    // error: "/auth/error", // Error code passed in query string as ?error=
+  },
 };
 
 export default NextAuth(authOptions);
