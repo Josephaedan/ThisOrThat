@@ -5,6 +5,7 @@ import { GetServerSideProps } from "next";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import Router, { useRouter } from "next/router";
 import { FieldValues, FormState, useForm } from "react-hook-form";
 
 type FormData = {
@@ -12,7 +13,16 @@ type FormData = {
   password: string;
 };
 
-export const SignInPage: NextPage = () => {
+export const SignInPage: NextPage<{
+  redirect?: string;
+  error?: string;
+  callbackUrl: string;
+}> = ({ redirect, error, callbackUrl }) => {
+  const router = useRouter();
+
+  console.log(redirect, error, callbackUrl);
+  // if (callbackUrl && typeof window !== "undefined") router.push(callbackUrl);
+
   const {
     register,
     handleSubmit,
@@ -116,14 +126,13 @@ export const SignInPage: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { redirect } = context.query;
-  if (!redirect) {
-    return {
-      props: {},
-    };
-  }
+  const { redirect, error, callbackUrl } = context.query;
+  const props: any = {};
+  if (redirect) props["redirect"] = redirect;
+  if (error) props["error"] = error;
+  if (callbackUrl) props["callbackUrl"] = callbackUrl;
   return {
-    props: { redirect }, // will be passed to the page component as props
+    props, // will be passed to the page component as props
   };
 };
 

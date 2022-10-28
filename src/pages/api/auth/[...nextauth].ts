@@ -9,6 +9,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 import { env } from "../../../env/server.mjs";
 import bcrypt from "bcrypt";
+import { redirect } from "next/dist/server/api-utils";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -18,6 +19,9 @@ export const authOptions: NextAuthOptions = {
         session.user.id = user.id;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   // Configure one or more authentication providers
@@ -68,9 +72,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    // signIn: "/auth/signin",
-    // signOut: "/",
-    // error: "/auth/error", // Error code passed in query string as ?error=
+    signIn: "/auth/signin",
+    signOut: "/",
+    error: "/auth/error", // Error code passed in query string as ?error=
   },
 };
 
