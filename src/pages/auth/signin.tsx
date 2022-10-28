@@ -2,7 +2,7 @@ import Button from "@/components/button/Button";
 import { motion } from "framer-motion";
 import { NextPage } from "next";
 import { GetServerSideProps } from "next";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
@@ -13,11 +13,7 @@ type FormData = {
   password: string;
 };
 
-export const SignInPage: NextPage<{
-  redirect?: string;
-  error?: string;
-  callbackUrl: string;
-}> = ({ redirect, error, callbackUrl }) => {
+export const SignInPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
   const router = useRouter();
 
   console.log(redirect, error, callbackUrl);
@@ -125,7 +121,18 @@ export const SignInPage: NextPage<{
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
+  const { req } = context;
+  const session = await getSession({ req });
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/", // Redirect to the home page if the user is already signed in
+      },
+    };
+  }
+
   const { redirect, error, callbackUrl } = context.query;
   const props: any = {};
   if (redirect) props["redirect"] = redirect;
