@@ -18,8 +18,12 @@ export default function Button({
 }: ButtonProps) {
   return (
     <LazyMotion features={domMax}>
-      <div className="rounded-lg bg-black">
+      <div className="bg-black">
         <m.button
+          style={{
+            translateX: -2,
+            translateY: -2,
+          }}
           whileHover={{
             transition: { duration: 0.2 },
             translateX: -5,
@@ -31,7 +35,7 @@ export default function Button({
             translateY: 0,
           }}
           className={clsx(
-            "text-md h-8 w-full rounded-lg border border-neutral bg-white font-bold text-neutral",
+            "text-md h-8 w-full border border-neutral bg-white font-bold text-neutral",
             className
           )}
           onClick={onClick}

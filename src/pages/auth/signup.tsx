@@ -1,5 +1,6 @@
 import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
 import Button from "@/components/styles/Button";
+import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import { getSession, signIn } from "next-auth/react";
 import Link from "next/link";
@@ -11,24 +12,26 @@ type FormData = {
   password: string;
 };
 
-export const SignInPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
+export const SignUpPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+  const createUser = trpc.auth.createUser.useMutation();
 
   const onSubmit = async (data: FormData) => {
     const { email, password } = data;
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    if (result?.error) {
-      console.log(result.error);
+    const result = await createUser.mutateAsync({ email, password });
+    if (!result) {
+      // TODO: handle error
     }
-    if (result?.ok) {
+    if (result) {
+      await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
       Router.push(redirect || "/");
     }
   };
@@ -37,7 +40,7 @@ export const SignInPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
     <div className="flex min-h-screen w-screen items-center justify-center">
       <div className="m-5 flex h-full w-full flex-col space-y-4 border border-neutral bg-accent p-8 md:h-1/2 md:w-1/2 xl:h-1/4 xl:w-1/4">
         <h1 className="text-center text-3xl font-extrabold text-neutral">
-          Sign In
+          Sign Up
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -51,7 +54,7 @@ export const SignInPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
           />
           <label className="text-md ml-1 text-neutral">Password</label>
           <input
-            {...register("password", { required: true })}
+            {...register("password", { required: true, minLength: 8 })}
             type="password"
             autoComplete="off"
             className="h-10 w-full border border-neutral bg-white p-1 focus:border"
@@ -60,13 +63,13 @@ export const SignInPage: NextPage = ({ redirect, error, callbackUrl }: any) => {
           <Button>
             <input
               type="submit"
-              value="Sign In"
+              value="Sign Up"
               className="hover:cursor-pointer"
             />
           </Button>
-          <Link href="/auth/signup">
+          <Link href="/auth/signin">
             <h1 className="ml-1 w-fit pt-2 text-sm font-semibold text-neutral underline hover:cursor-pointer">
-              Sign up
+              Sign In
             </h1>
           </Link>
         </form>
@@ -98,4 +101,4 @@ export const getServerSideProps = async (context: any) => {
   };
 };
 
-export default SignInPage;
+export default SignUpPage;

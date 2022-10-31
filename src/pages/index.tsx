@@ -6,7 +6,6 @@ import { trpc } from "../utils/trpc";
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
   const user = trpc.auth.getUser.useQuery();
-  console.log(user);
 
   return (
     <>
@@ -69,7 +68,6 @@ export default Home;
 
 const AuthShowcase: React.FC = () => {
   const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery();
-
   const { data: sessionData } = useSession();
 
   return (
